@@ -1,0 +1,80 @@
+package FitnessTracker.controller;
+
+import java.util.List;
+
+import FitnessTracker.service.ExerciseService;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import FitnessTracker.entity.Exercise;
+
+@Controller
+@RequestMapping("/exercises")
+public class ExerciseController {
+
+	private ExerciseService ExerciseService;
+
+	public ExerciseController(ExerciseService theExerciseService) {
+		ExerciseService = theExerciseService;
+	}
+
+	// add mapping for "/list"
+
+	@GetMapping("/list")
+	public String listExercise(Model theModel) {
+
+		// get the exercises from db
+		List<Exercise> theExercises = ExerciseService.findAll();
+
+		// add to the spring model
+		theModel.addAttribute("exercises", theExercises);
+
+		return "exercises/list-exercises";
+	}
+
+	@GetMapping("/AddExercise")
+	public String showFormForAdd(Model theModel) {
+
+		// create model attribute to bind form data
+		Exercise theExercise = new Exercise();
+
+		theModel.addAttribute("exercise", theExercise);
+
+		return "exercises/exercise-form";
+	}
+
+	@GetMapping("/UpdateExercise")
+		public String showFormForUpdate(@RequestParam("exerciseId") int theId, Model theModel){
+		// get the exercise from the service.
+		Exercise theExercise = ExerciseService.findById(theId);
+
+		// set exercise in the model to prepopulate the form.
+		theModel.addAttribute("exercise", theExercise);
+		// send the new data to our form
+
+		return "exercises/exercise-form";
+		}
+
+	@PostMapping("/delete")
+	public String deleteExercise(@RequestParam("exerciseId") int theId) {
+		// Delete the exercise
+		ExerciseService.deleteById(theId);
+
+		// Redirect to the list of exercises
+		return "redirect:/exercises/list";
+	}
+
+
+	@PostMapping("/save")
+	public String saveExercise(@ModelAttribute("exercise")
+								   Exercise theExercise) {
+
+		// save the exercise
+		ExerciseService.save(theExercise);
+
+		// use a redirect to prevent duplicate submissions
+		return "redirect:/exercises/list";
+	}
+}

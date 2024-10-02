@@ -40,22 +40,17 @@ public class PdfDownloadController {
     public ResponseEntity<InputStreamResource> downloadPdf(@RequestParam(required = false) String userId)
             throws IOException, InterruptedException {
 
-        // Create PDF in memory
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (PdfWriter writer = new PdfWriter(out);
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document document = new Document(pdfDocument)) {
 
-            // Set document metadata
             pdfDocument.getDocumentInfo().setTitle("Exercise Data");
             pdfDocument.getDocumentInfo().setAuthor("Fitness Tracker App");
             pdfDocument.getDocumentInfo().setCreator("Fitness Tracker Development Team");
 
-            // Add content to the PDF
             document.add(new Paragraph("Exercise Data\n\n"));
             Paragraph paragraph = new Paragraph("This PDF file contains your exercise history. Hope it helps!\n\n");
-
-            // Query to retrieve data from the database
             List<Map<String, Object>> rowsFirstQuery;
             if (userId != null) {
                 rowsFirstQuery = jdbcTemplate.queryForList(
@@ -75,14 +70,12 @@ public class PdfDownloadController {
 
             document.add(paragraph);
 
-            // Create table with 4 columns (id, exercise_name, weight, date)
             Table table = new Table(4);
             addTableHeader(table, "ID");
             addTableHeader(table, "Exercise Name");
             addTableHeader(table, "Weight (kg)");
             addTableHeader(table, "Date");
 
-            // Add data to the PDF table
             for (Map<String, Object> rowFirstQuery : rowsFirstQuery) {
                 table.addCell(new Cell().add(new Paragraph(rowFirstQuery.get("exercise_id").toString())));
                 table.addCell(new Cell().add(new Paragraph(rowFirstQuery.get("exercise_name").toString())));
@@ -90,7 +83,6 @@ public class PdfDownloadController {
                 table.addCell(new Cell().add(new Paragraph(rowFirstQuery.get("date").toString())));
             }
 
-            // Add table to document
             document.add(table);
 
             // Creating graphs
@@ -101,79 +93,57 @@ public class PdfDownloadController {
                            FROM exercise 
                            GROUP BY exercise_name""");
 
-            // Inside the for loop that adds the charts
             for (Map<String, Object> row : rowsGraphsQuery) {
                 String exerciseName = (String) row.get("exercise_name");
                 String[] weights = ((String) row.get("weights")).split(",");
                 String[] dates = ((String) row.get("dates")).split(",");
-
-                // Create a chart
                 XYChart chart = new XYChart(800, 600);
 
-                chart.setTitle(exerciseName); // Set the title to the exercise name
-                chart.setXAxisTitle("Date"); // Set X-axis title
-                chart.setYAxisTitle("Weights (kg)"); // Set Y-axis title
+                chart.setTitle(exerciseName); 
+                chart.setXAxisTitle("Date"); 
+                chart.setYAxisTitle("Weights (kg)"); 
                 chart.getStyler().setXAxisMin(0.0);
 
-                // Set date pattern for X-axis
                 chart.getStyler().setDatePattern("yyyy-MM-dd");
                 chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
 
 
-                // Convert weights to double for plotting
                 double[] weightValues = Arrays.stream(weights).mapToDouble(Double::parseDouble).toArray();
 
                 double[] dateValues = new double[dates.length];
 
-                // Convert date strings to doubles (for the sake of plotting)
-                for (int i = 0; i < dates.length; i++) {
-                    // Convert date string to epoch time (or any other numeric format)
-                    dateValues[i] = i; // Placeholder for date representation; adjust if you have date conversion logic
-                }
+                
 
-                // Add data to the chart
                 chart.addSeries("Weights", dateValues, weightValues);
 
-                // Save the chart as an image
                 BufferedImage image = BitmapEncoder.getBufferedImage(chart);
                 ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
                 ImageIO.write(image, "png", imageOutputStream);
                 byte[] imageBytes = imageOutputStream.toByteArray();
 
-                // Create a new area break to ensure that title and image are on the same page if necessary
                 document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-
-                // Add the title paragraph followed immediately by the chart image
                 Paragraph titleParagraph = new Paragraph(exerciseName)
                         .setFontSize(14)
                         .setBold()
                         .setTextAlignment(TextAlignment.CENTER)
-                        .setMarginBottom(5);  // Minimal margin to ensure it's close to the chart
+                        .setMarginBottom(5);  
 
-                // Add title and chart as a single block
                 document.add(titleParagraph);
-
-                // Center and add chart image directly below the title
                 Image imageDoc = new Image(ImageDataFactory.create(imageBytes))
                         .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                        .setAutoScale(true)  // Ensures the image fits within the page margins
-                        .setMarginBottom(10);  // Margin for space after the chart
+                        .setAutoScale(true)  
+                        .setMarginBottom(10); 
 
                 document.add(imageDoc);
 
 
         }
 
-        } // Resources are automatically closed here
+        } 
 
-        // Convert to InputStream for download
         ByteArrayInputStream bis = new ByteArrayInputStream(out.toByteArray());
-
-        // Set response headers
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=ExerciseData.pdf");
-
-        // Return PDF as a response
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
@@ -182,7 +152,7 @@ public class PdfDownloadController {
 
     private void addTableHeader(Table table, String headerTitle) {
         Cell header = new Cell();
-        header.add(new Paragraph(headerTitle).setBold()); // Make the header bold
+        header.add(new Paragraph(headerTitle).setBold()); 
         table.addHeaderCell(header);
     }
 }

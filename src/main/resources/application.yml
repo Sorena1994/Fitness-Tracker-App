@@ -1,0 +1,13 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 353018645207-dlea28ncv3gm2m0h852jc8ebmk1fni6n.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: "http://localhost:8080/login/oauth2/code/google"  # Use the correct base URL for your app
+          github:
+            client-id: Ov23liPXkNpxbEcpxg5U
+            client-secret: 03623911d2ddb9de1bc8b4874465ca5bdf6b37b1
+            redirect-uri: "http://localhost:8080/login/oauth2/code/github"  # Use the correct base URL for your app

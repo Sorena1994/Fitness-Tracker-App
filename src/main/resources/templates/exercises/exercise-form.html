@@ -2,11 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
     <title>Save Exercise</title>
@@ -14,10 +12,10 @@
     <script>
         function validateDate(event) {
             const dateInput = document.getElementById('dateInput');
-            const datePattern = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd pattern
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/; 
 
             if (!datePattern.test(dateInput.value)) {
-                event.preventDefault(); // Prevent form submission
+                event.preventDefault();
                 const errorSpan = document.getElementById('dateError');
                 errorSpan.textContent = 'Please enter the date in the correct format: yyyy-mm-dd';
             }

@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private JdbcTemplate jdbcTemplate; // Add JdbcTemplate to manage database operations
+    private JdbcTemplate jdbcTemplate; 
 
     @Autowired
     public UserServiceImpl(UserRepository theUserRepository, JdbcTemplate jdbcTemplate) {
         this.userRepository = theUserRepository;
-        this.jdbcTemplate = jdbcTemplate; // Initialize JdbcTemplate
+        this.jdbcTemplate = jdbcTemplate; 
     }
 
     @Override
@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(String theUserID) { // Change Long to String
-        Optional<User> result = userRepository.findById(theUserID); // Change Long to String
+    public User findById(String theUserID) { 
+        Optional<User> result = userRepository.findById(theUserID); 
         if (result.isPresent()) {
             return result.get();
         } else {
@@ -44,35 +44,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User theUser) {
         userRepository.save(theUser);
-        createUserTable(theUser.getUsername()); // Create a user-specific table after saving
+        createUserTable(theUser.getUsername()); 
     }
 
     @Override
-    public void deleteById(String theId) { // Change Long to String
+    public void deleteById(String theId) { 
         userRepository.deleteById(theId);
-        dropUserTable(theId); // Optional: Drop the user table when deleting the user
+        dropUserTable(theId);
     }
-
-    // Method to create a dynamic table for the user
     private void createUserTable(String username) {
-        // Validate the username to prevent SQL injection
         validateUsername(username);
-
-        // SQL statement to create a table for the user
         String sql = "CREATE TABLE IF NOT EXISTS " + username + " ("
                 + "id SERIAL PRIMARY KEY, "
-                + "data VARCHAR(255));"; // Customize the table structure as needed
+                + "data VARCHAR(255));";
         jdbcTemplate.execute(sql);
     }
 
-    // Method to drop the user table (optional)
     private void dropUserTable(String username) {
         validateUsername(username);
         String sql = "DROP TABLE IF EXISTS " + username + ";";
         jdbcTemplate.execute(sql);
     }
 
-    // Validate username to prevent SQL injection
     private void validateUsername(String username) {
         if (!username.matches("^[a-zA-Z0-9_]+$")) {
             throw new IllegalArgumentException("Invalid username");

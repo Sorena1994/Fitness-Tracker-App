@@ -6,12 +6,10 @@ import java.util.List;
 
 public interface UserService {
     List<User> findAll();
-    User findById(String theUserID); // Change Long to String
-    User findByUserID(String theUserID); // Change return type to User
+    User findById(String theUserID); 
+    User findByUserID(String theUserID); 
     void save(User theUser);
-    void deleteById(String theUserID); // Change Long to String
-
-    // New method to create a dynamic table for the user
+    void deleteById(String theUserID); 
     private void createUserTable(String username) {
 
     }

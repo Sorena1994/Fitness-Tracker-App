@@ -20,7 +20,6 @@ public class AuthController {
     public ModelAndView githubCallback(@AuthenticationPrincipal OAuth2User principal) {
         // You can process the user's info from the principal here if needed
 
-        // Redirect to list-exercises after successful login
         return new ModelAndView("redirect:/list-exercises");
     }
 }

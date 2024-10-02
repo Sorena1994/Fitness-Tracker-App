@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Exercise Directory</title>
+
+    <script>
+        function validateDeleteForm() {
+            var selectElement = document.getElementById("exerciseID");
+            if (selectElement.value === "") {
+                alert("Please select an exercise to delete.");
+                return false;
+            }
+            return confirm("Are you sure you want to delete this exercise?");
+        }
+    </script>
+
+    <style>
+        .table {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Exercise Directory</h3>
+        <span class="align-self-center" th:text="${username}">Username</span>
+        <!-- Logout Button -->
+        <a th:href="@{/logout}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+    <hr>
+
+    <!-- Add buttons for adding exercises and downloading PDF -->
+    <div class="d-flex justify-content-between mb-3">
+        <a th:href="@{/exercises/AddExercise}" class="btn btn-primary btn-sm">Add Exercise</a>
+        <!-- Download PDF button -->
+        <a th:href="@{/api/download-pdf}" class="btn btn-success btn-sm">Download PDF</a>
+    </div>
+
+    <!-- Form for selecting an exercise to delete -->
+    <form th:action="@{/exercises/delete}" method="post" class="mb-3" onsubmit="return validateDeleteForm();">
+        <div class="form-group">
+            <label for="exerciseID">Select Exercise to Delete:</label>
+            <select id="exerciseID" name="exerciseId" class="form-control">
+                <option value="" disabled selected>Select Exercise</option>
+                <option th:each="tempExercise : ${exercises}"
+                        th:value="${tempExercise.id}"
+                        th:text="${tempExercise.exerciseName} + ' (Weight: ' + ${tempExercise.weight} + ' kg, Date: ' + ${tempExercise.date} + ')'"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-danger mt-2">Delete Exercise</button>
+    </form>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Exercise</th>
+            <th>Weight</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(exercises)}">
+            <td colspan="5" class="text-center">No exercises available.</td>
+        </tr>
+        <tr th:each="tempExercise : ${exercises}" th:if="${!#lists.isEmpty(exercises)}">
+            <td th:text="${tempExercise.id}"></td>
+            <td th:text="${tempExercise.exerciseName}"></td>
+            <td th:text="${tempExercise.weight}"></td>
+            <td th:text="${tempExercise.date}"></td>
+            <td>
+                <a th:href="@{/exercises/UpdateExercise(exerciseId=${tempExercise.id})}" class="btn btn-info btn-sm">
+                    Update
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

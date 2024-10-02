@@ -1,5 +1,4 @@
 package FitnessTracker.controller;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ public class AuthController {
 
     @GetMapping("/oauth2/callback/github")
     public ModelAndView githubCallback(@AuthenticationPrincipal OAuth2User principal) {
-        // You can process the user's info from the principal here if needed
 
         return new ModelAndView("redirect:/list-exercises");
     }

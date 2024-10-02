@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Save Exercise</title>
+
+    <script>
+        function validateDate(event) {
+            const dateInput = document.getElementById('dateInput');
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd pattern
+
+            if (!datePattern.test(dateInput.value)) {
+                event.preventDefault(); // Prevent form submission
+                const errorSpan = document.getElementById('dateError');
+                errorSpan.textContent = 'Please enter the date in the correct format: yyyy-mm-dd';
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Exercise Directory</h3>
+        <span class="align-self-center" th:text="${username}">Username</span> <!-- Display username here -->
+    </div>
+    <hr>
+
+    <p class="h4 mb-4">Save Exercise</p>
+
+    <form action="#" th:action="@{/exercises/save}" th:object="${exercise}" method="POST" onsubmit="validateDate(event)">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{userID}"/>
+
+
+        <input type="text" th:field="*{exerciseName}" class="form-control mb-4 w-25" placeholder="Exercise" required/>
+        <span th:if="${#fields.hasErrors('exerciseName')}" th:errors="*{exerciseName}" class="error"></span>
+
+        <input type="number" th:field="*{weight}" class="form-control mb-4 w-25" placeholder="Weight" required/>
+        <span th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" class="error"></span>
+
+        <input type="text" id="dateInput" th:field="*{date}" class="form-control mb-4 w-25" placeholder="Date (yyyy-mm-dd)" required/>
+        <span id="dateError" class="text-danger mb-3"></span>
+        <span th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error"></span>
+
+        <button type="submit" class="btn btn-info col-2">Save</button>
+    </form>
+
+    <hr>
+    <a th:href="@{/exercises/list}">Back to Exercise List</a>
+
+</div>
+
+</body>
+</html>

@@ -27,6 +27,7 @@ public class ExerciseController {
 		this.userService = theUserService;
 	}
 
+	// Add mapping for "/list"
 	@GetMapping("/list")
 	public String listExercise(Model theModel) {
 		List<Exercise> theExercises = exerciseService.findAll();
@@ -36,29 +37,29 @@ public class ExerciseController {
 
 	@GetMapping("/AddExercise")
 	public String showFormForAdd(@ModelAttribute("exercise") Exercise exercise, Principal principal, Model theModel) {
-		String userID = principal.getName(); 
+		String userID = principal.getName(); // Assuming principal name is the userID
 		exercise.setUserID(userID); // Associate user with exercise
 		theModel.addAttribute("exercise", exercise);
 		return "exercises/exercise-form";
 	}
 
 	@GetMapping("/UpdateExercise")
-	public String showFormForUpdate(@RequestParam("exerciseId") Integer theId, Model theModel) { 
-		Exercise theExercise = exerciseService.findById(theId);
+	public String showFormForUpdate(@RequestParam("exerciseId") Integer theId, Model theModel) { // Change Long to Integer
+		Exercise theExercise = exerciseService.findById(theId); // Directly use Integer
 		theModel.addAttribute("exercise", theExercise);
 		return "exercises/exercise-form";
 	}
 
 	@PostMapping("/delete")
-	public String deleteExercise(@RequestParam("exerciseId") Integer theId) {
-		exerciseService.deleteById(theId); 
+	public String deleteExercise(@RequestParam("exerciseId") Integer theId) { // Change Long to Integer
+		exerciseService.deleteById(theId); // Directly use Integer
 		return "redirect:/exercises/list";
 	}
 
 	@PostMapping("/save")
 	public String saveExercise(@ModelAttribute("exercise") @Valid Exercise theExercise, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return "exercises/exercise-form"; 
+			return "exercises/exercise-form"; // Return to form if there are validation errors
 		}
 		exerciseService.save(theExercise);
 		return "redirect:/exercises/list";

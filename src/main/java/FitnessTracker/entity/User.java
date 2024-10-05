@@ -12,7 +12,7 @@ public class User {
 
     @Id
     @Column(name = "user_id")
-    private String userID; 
+    private String userID; // Ensure this is lowercase to follow Java conventions
 
     @Column(name = "username")
     @NotNull(message = "is required")
@@ -21,13 +21,19 @@ public class User {
 
     @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Exercise> exercises = new ArrayList<>();
+
+    // Default constructor
     public User() {
     }
+
+    // Parameterized constructor
     public User(String userID, String username, List<Exercise> exercises) {
         this.userID = userID;
         this.username = username;
         this.exercises = exercises;
     }
+
+    // Getters and Setters
     public String getUserID() {
         return userID;
     }

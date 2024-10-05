@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @SpringBootApplication
-public class ThymeleafdemoApplication  {
+public class FitnessTrackerApplication  {
 
 	@GetMapping("/user")
 	public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
@@ -18,7 +18,7 @@ public class ThymeleafdemoApplication  {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThymeleafdemoApplication.class, args);
+		SpringApplication.run(FitnessTrackerApplication.class, args);
 	}
 
 }

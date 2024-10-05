@@ -31,6 +31,8 @@ public class Exercise {
 	@Column(name = "date")
 	private LocalDate date;
 
+
+	// Getters and Setters
 	public Integer getId() {
 		return id;
 	}
